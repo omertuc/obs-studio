@@ -1062,6 +1062,8 @@ bool SimpleOutput::ConfigureRecording(bool updateReplayBuffer)
 		config_get_int(main->Config(), "SimpleOutput", "RecRBTime");
 	int rbSize =
 		config_get_int(main->Config(), "SimpleOutput", "RecRBSize");
+	bool rbFlush = config_get_bool(main->Config(), "SimpleOutput",
+				       "FlushRBAfterSave");
 
 	string f;
 	string strPath;
@@ -1079,6 +1081,7 @@ bool SimpleOutput::ConfigureRecording(bool updateReplayBuffer)
 		obs_data_set_int(settings, "max_time_sec", rbTime);
 		obs_data_set_int(settings, "max_size_mb",
 				 usingRecordingPreset ? rbSize : 0);
+		obs_data_set_bool(settings, "save_flush", rbFlush);
 	} else {
 		f = GetFormatString(filenameFormat, nullptr, nullptr);
 		strPath = GetRecordingFilename(path,
@@ -2020,6 +2023,7 @@ bool AdvancedOutput::StartReplayBuffer()
 	const char *rbSuffix;
 	int rbTime;
 	int rbSize;
+	bool rbFlush;
 
 	if (!useStreamEncoder) {
 		if (!ffmpegOutput)
@@ -2054,6 +2058,8 @@ bool AdvancedOutput::StartReplayBuffer()
 					     "RecRBSuffix");
 		rbTime = config_get_int(main->Config(), "AdvOut", "RecRBTime");
 		rbSize = config_get_int(main->Config(), "AdvOut", "RecRBSize");
+		rbFlush = config_get_bool(main->Config(), "AdvOut",
+					  "FlushRBAfterSave");
 
 		string f = GetFormatString(filenameFormat, rbPrefix, rbSuffix);
 		string strPath = GetOutputFilename(
@@ -2068,6 +2074,7 @@ bool AdvancedOutput::StartReplayBuffer()
 		obs_data_set_int(settings, "max_time_sec", rbTime);
 		obs_data_set_int(settings, "max_size_mb",
 				 usesBitrate ? 0 : rbSize);
+		obs_data_set_bool(settings, "save_flush", rbFlush);
 
 		obs_output_update(replayBuffer, settings);
 	}

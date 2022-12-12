@@ -34,6 +34,8 @@ struct ffmpeg_muxer {
 	int keyframes;
 	obs_hotkey_id hotkey;
 	volatile bool muxing;
+	volatile bool flushing;
+	bool save_flush;
 	DARRAY(struct encoder_packet) mux_packets;
 
 	/* split file */
@@ -64,6 +66,7 @@ struct ffmpeg_muxer {
 	bool allow_overwrite;
 };
 
+bool flushing(struct ffmpeg_muxer *stream);
 bool stopping(struct ffmpeg_muxer *stream);
 bool active(struct ffmpeg_muxer *stream);
 void start_pipe(struct ffmpeg_muxer *stream, const char *path);
