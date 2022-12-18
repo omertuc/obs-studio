@@ -7239,6 +7239,13 @@ void OBSBasic::StopRecording()
 	if (outputHandler->RecordingActive())
 		outputHandler->StopRecording(recordingStopping);
 
+	os_atomic_set_bool(&recording_paused, false);
+
+	auto replay = replayBufferButton ? replayBufferButton->second()
+					 : nullptr;
+	if (replay)
+		replay->setEnabled(true);
+
 	OnDeactivate();
 }
 
